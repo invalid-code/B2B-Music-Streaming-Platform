@@ -1,0 +1,20 @@
+/* Desktop-optimized auth styles */
+:root{--bg:#0f1720;--card:#0b1220;--text:#e6eef8;--muted:#9fb0c8;--accent:#4f46e5}
+body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#081024 0%, #071226 100%);color:var(--text);}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;background:transparent}
+.app-header nav a{color:var(--muted);margin-left:12px;text-decoration:none}
+.page--auth{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:48px}
+.auth-form{max-width:560px;width:100%;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);padding:28px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+.auth-form--desktop{padding:28px}
+.auth-form label{display:block;margin-bottom:12px;color:var(--muted);font-size:14px}
+.auth-form input{width:100%;padding:10px 12px;margin-top:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)}
+.auth-actions{margin-top:18px;display:flex;justify-content:flex-end}
+.btn-primary{background:linear-gradient(90deg,var(--accent),#7c3aed);color:white;padding:10px 16px;border-radius:8px;border:none;cursor:pointer}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed}
+.auth-error{margin-top:12px;color:#ff8b8b}
+
+@media (min-width: 1024px){
+	.page--auth{padding-top:72px}
+	.auth-form{width:520px}
+}
+

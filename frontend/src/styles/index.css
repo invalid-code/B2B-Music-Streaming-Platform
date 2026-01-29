@@ -1,0 +1,6 @@
+/* Global style entry for frontend */
+@import './Auth.css';
+
+/* layout helpers */
+:root{--app-max-width:1200px}
+.app-root{max-width:var(--app-max-width);margin:0 auto}
