@@ -32,6 +32,13 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 // TODO: Implement StreamingService and CloudflareSignedUrlService
 // builder.Services.AddScoped<IStreamingService, StreamingService>();
 // builder.Services.AddScoped<ISignedUrlService, CloudflareSignedUrlService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowedAllOrigins",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
 
 var app = builder.Build();
 
@@ -42,6 +49,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthorization();
 
