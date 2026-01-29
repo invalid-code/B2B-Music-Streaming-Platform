@@ -34,7 +34,7 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 // builder.Services.AddScoped<ISignedUrlService, CloudflareSignedUrlService>();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowedAllOrigins",
+    options.AddPolicy("AllowAllOrigins",
         builder => builder.AllowAnyOrigin()
                           .AllowAnyMethod()
                           .AllowAnyHeader());
