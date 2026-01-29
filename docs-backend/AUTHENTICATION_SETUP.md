@@ -1,30 +1,32 @@
-# Authentication & Multi-Tenant Setup Guide
+# Setting Up Authentication & Multi-Tenant Access
 
-## Overview
+## What's This All About?
 
-This guide explains the implementation of the "Zero-Install" authentication flow for the B2B Music Streaming Platform. The system uses JWT tokens with embedded TenantIds to achieve multi-tenant isolation without additional configuration.
+This guide walks you through our "Zero-Install" authentication system for the B2B Music Streaming Platform. We use JWT tokens that include tenant information, so each venue's data stays separate without any extra setup.
 
 ---
 
-## Architecture
+## How It All Fits Together
 
-### 1. Multi-Tenant Identity Structure
+### 1. Our User Structure
+
+We have a clean way to handle different types of users across multiple venues:
 
 ```
-ApplicationUser (Inherits IdentityUser)
-??? BusinessOwner (Venue Owner)
-??? SystemAdmin (Platform Admin)
+ApplicationUser (builds on IdentityUser)
+??? BusinessOwner (venue owner/manager)
+??? SystemAdmin (platform administrator)
 
-Each ApplicationUser has:
-- TenantId (Foreign Key)
+Every user has:
+- TenantId (links to their venue)
 - Role (BusinessOwner, SystemAdmin, Staff)
 - FullName
 - IsActive flag
 ```
 
-### 2. JWT Token Payload
+### 2. What's Inside Our JWT Tokens
 
-When a user logs in, the JWT contains:
+When someone logs in, their token includes all the info needed:
 
 ```json
 {
@@ -38,13 +40,13 @@ When a user logs in, the JWT contains:
 }
 ```
 
-**Key Feature**: The `TenantId` is embedded in the token, ensuring every API request knows which venue's data to access.
+**Cool Trick**: The `TenantId` rides along in every token, so our API always knows which venue's data to work with.
 
 ---
 
-## API Endpoints
+## API Endpoints You'll Use
 
-### Registration (Create Venue + Owner)
+### Signing Up (Creates Venue + Owner)
 
 ```http
 POST /api/auth/register
