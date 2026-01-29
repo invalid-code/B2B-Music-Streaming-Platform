@@ -1,5 +1,5 @@
 import create from 'zustand'
-import api from '../api/client'
+import { authService } from '../services/authService'
 
 export const useAuthStore = create((set) => ({
   user: null,
@@ -12,7 +12,7 @@ export const useAuthStore = create((set) => ({
   loginWithApi: async (credentials) => {
     set({ loading: true, error: null })
     try {
-      const data = await api.post('/auth/login', credentials)
+      const data = await authService.login(credentials)
       set({ user: data.user || { email: credentials.email }, token: data.token, loading: false })
     } catch (err) {
       set({ error: err.message || 'Network error', loading: false })
@@ -21,7 +21,7 @@ export const useAuthStore = create((set) => ({
   registerWithApi: async (payload) => {
     set({ loading: true, error: null })
     try {
-      const data = await api.post('/auth/register', payload)
+      const data = await authService.register(payload)
       set({ user: data.user || { email: payload.email }, token: data.token, loading: false })
     } catch (err) {
       set({ error: err.message || 'Network error', loading: false })

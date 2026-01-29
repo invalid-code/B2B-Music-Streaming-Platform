@@ -1,20 +1,136 @@
-/* Desktop-optimized auth styles */
-:root{--bg:#0f1720;--card:#0b1220;--text:#e6eef8;--muted:#9fb0c8;--accent:#4f46e5}
-body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#081024 0%, #071226 100%);color:var(--text);}
-.app-header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;background:transparent}
-.app-header nav a{color:var(--muted);margin-left:12px;text-decoration:none}
-.page--auth{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:48px}
-.auth-form{max-width:560px;width:100%;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);padding:28px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
-.auth-form--desktop{padding:28px}
-.auth-form label{display:block;margin-bottom:12px;color:var(--muted);font-size:14px}
-.auth-form input{width:100%;padding:10px 12px;margin-top:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)}
-.auth-actions{margin-top:18px;display:flex;justify-content:flex-end}
-.btn-primary{background:linear-gradient(90deg,var(--accent),#7c3aed);color:white;padding:10px 16px;border-radius:8px;border:none;cursor:pointer}
-.btn-primary:disabled{opacity:0.6;cursor:not-allowed}
-.auth-error{margin-top:12px;color:#ff8b8b}
+/* Auth page styles */
+.page--auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--bg-color) 0%, #0a0a0a 100%);
+  padding: 2rem;
+}
 
-@media (min-width: 1024px){
-	.page--auth{padding-top:72px}
-	.auth-form{width:520px}
+.page--auth h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: var(--text-color);
+  text-align: center;
+  background: linear-gradient(135deg, var(--primary-color), #1ed760);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.auth-form {
+  max-width: 400px;
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.auth-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), #1ed760);
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.field-error {
+  color: #ff6b6b;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Additional auth links */
+.auth-links {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.auth-links a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.auth-links a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .page--auth {
+    padding: 1rem;
+  }
+  .auth-form {
+    padding: 1.5rem;
+  }
+  .page--auth h1 {
+    font-size: 2rem;
+  }
 }
 
