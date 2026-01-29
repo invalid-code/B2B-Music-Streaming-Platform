@@ -24,6 +24,15 @@ namespace API.Controllers
         }
 
         /// <summary>
+        /// Simple test endpoint for CORS
+        /// </summary>
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            return Ok(new { message = "CORS test successful!", timestamp = DateTime.UtcNow });
+        }
+
+        /// <summary>
         /// Register a new venue owner.
         /// This creates:
         /// 1. A new Tenant (Venue) record
