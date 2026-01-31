@@ -11,6 +11,15 @@ So I've been working on this B2B Music Streaming Platform - basically a way for 
 
 What We've Been Up To Lately
 
+Fixed Missing Registration Fields
+- Updated RegisterForm.jsx to match backend API requirements:
+  - Added Full Name field (required)
+  - Added Location field (required) 
+  - Added Business Registration Number field (optional)
+  - Changed "Company name" to "Venue name" to match API field naming
+  - Updated validation to include all required fields
+  - Fixed API payload to send correct field names (venueName instead of company)
+
 First Things First: Getting the Repo Sorted
 - Wiped the .git folder - yeah, we needed a fresh start
 - Pushed everything to GitHub on the `JP` branch
@@ -72,13 +81,13 @@ Getting the Docs in Order
 
 CORS Drama and Branch Shenanigans
 
-#### The Great Branch Merge
+The Great Branch Merge
 - Switched to the jess branch: `git checkout -b jess origin/jess`
 - Fixed a CORS naming issue: Was "AllowedAllOrigins" but needed to be "AllowAllOrigins"
 - Dealt with merge conflicts: Just took the jess branch versions
 - Merged jess into JP: `git merge jess --allow-unrelated-histories`
 
-#### CORS Setup (Finally!)
+CORS Setup (Finally!)
 - Program.cs changes:
   - Added CORS service with "AllowAllOrigins" policy
   - Set it to allow any origin, method, or header (for dev)
@@ -89,7 +98,7 @@ CORS Drama and Branch Shenanigans
   - Turned off nullable reference types (`<Nullable>disable</Nullable>`)
   - This lets the app build despite all the null warnings
 
-#### Service Setup
+ Service Setup
 - Commented out the database (PostgreSQL) to avoid connection headaches
 - Registered the core services:
   - `IAuthenticationService` → `AuthenticationService`
@@ -98,12 +107,12 @@ CORS Drama and Branch Shenanigans
 
 Getting Frontend and Backend to Talk
 
-#### Environment Stuff
+Environment Stuff
 - Updated the .env file:
   - Changed API URL from `https://localhost:7249/api` to `http://localhost:5269/api`
   - Now points to the right backend port
 
-#### Testing Setup
+Testing Setup
 - Made cors-test.html: Simple page to test CORS
 - Added a test endpoint: `/api/auth/test` in AuthController for basic checks
 
@@ -225,12 +234,12 @@ Last updated: January 29, 2026
 Current branch: JP
 Status: CORS configured, but backend stability issues blocking testing
 
-#### Environment Configuration
+Environment Configuration
 - Updated .env file:
   - Changed `VITE_API_BASE` from `https://localhost:7249/api` to `http://localhost:5269/api`
   - Ensured correct backend URL for frontend API calls
 
-#### Test Infrastructure
+Test Infrastructure
 - Created cors-test.html: Simple HTML page for testing CORS functionality
 - Added test endpoint: `/api/auth/test` in AuthController for basic connectivity testing
 
