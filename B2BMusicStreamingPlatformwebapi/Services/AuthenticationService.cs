@@ -2,6 +2,7 @@ using API.Models.DTOs.Requests.Auth;
 using API.Models.DTOs.Response.Auth;
 using API.Models.Entities;
 using API.Models.Identity;
+using API.Data;
 
 namespace API.Services
 {
@@ -15,12 +16,14 @@ namespace API.Services
     {
         private readonly IJwtTokenService _jwtTokenService;
         // In-memory storage for users (replace with database later)
-        private static readonly List<ApplicationUser> _users = new();
-        private static readonly List<Tenant> _tenants = new();
+        // private static readonly List<ApplicationUser> _users = new();
+        // private static readonly List<Tenant> _tenants = new();
+        private MusicStreamingDbContext _dbContext;
 
-        public AuthenticationService(IJwtTokenService jwtTokenService)
+        public AuthenticationService(IJwtTokenService jwtTokenService, MusicStreamingDbContext dbContext)
         {
             _jwtTokenService = jwtTokenService;
+            _dbContext = dbContext;
         }
 
         /// <summary>
@@ -33,7 +36,7 @@ namespace API.Services
             try
             {
                 // Check if email already exists
-                if (_users.Any(u => u.Email == request.Email))
+                if (_dbContext.Users.Any(u => u.Email == request.Email))
                 {
                     return (false, null, "Email already registered");
                 }
@@ -49,7 +52,9 @@ namespace API.Services
                     CreatedAt = DateTime.UtcNow
                 };
 
-                _tenants.Add(tenant);
+                // _tenants.Add(tenant);
+                await _dbContext.Tenants.AddAsync(tenant);
+                await _dbContext.SaveChangesAsync();
 
                 // Create user linked to tenant
                 ApplicationUser user;
@@ -81,7 +86,9 @@ namespace API.Services
                     };
                 }
 
-                _users.Add(user);
+                // _users.Add(user);
+                await _dbContext.Users.AddAsync(user);
+                await _dbContext.SaveChangesAsync();
 
                 // Generate JWT token
                 var token = _jwtTokenService.GenerateToken(user, tenant.Id);
@@ -125,7 +132,8 @@ namespace API.Services
             try
             {
                 // Find user by email
-                var user = _users.FirstOrDefault(u => u.Email == request.Email);
+                // var user = _users.FirstOrDefault(u => u.Email == request.Email);
+                var user = _dbContext.Users.FirstOrDefault(u => u.Email == request.Email);
                 if (user == null || !VerifyPassword(request.Password, user.PasswordHash))
                 {
                     return (false, null, "Invalid email or password");
@@ -138,7 +146,8 @@ namespace API.Services
                 }
 
                 // Get tenant information
-                var tenant = _tenants.FirstOrDefault(t => t.Id == user.TenantId);
+                // var tenant = _tenants.FirstOrDefault(t => t.Id == user.TenantId);
+                var tenant = _dbContext.Tenants.FirstOrDefault(t => t.Id == user.TenantId);
                 if (tenant == null)
                 {
                     return (false, null, "Tenant not found");
