@@ -2,10 +2,14 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import useAuthStore from '../../store/useAuthStore'
 import { validateEmail, validatePassword } from '../../utils/validation'
+import Input from '../common/Input'
+import Button from '../common/Button'
+import { useToast } from '../common/Toast'
 
 export default function LoginForm() {
   const navigate = useNavigate()
   const { loginWithApi, loading, error } = useAuthStore()
+  const toast = useToast()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fieldErrors, setFieldErrors] = useState({})
@@ -20,56 +24,51 @@ export default function LoginForm() {
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    if (!validateForm()) return
-    await loginWithApi({ email, password })
-    // in a real app, check store state to decide navigation
-    navigate('/')
+    if (!validateForm()) {
+      toast.error('Please fix the form errors')
+      return
+    }
+    try {
+      await loginWithApi({ email, password })
+      toast.success('Welcome back!')
+      navigate('/')
+    } catch (err) {
+      toast.error(err.message || 'Login failed')
+    }
   }
 
   return (
     <form className="auth-form" onSubmit={onSubmit}>
-      <div className="form-group">
-        <label className="form-label" htmlFor="email">
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          autoFocus
-          className="form-input"
-          aria-describedby={fieldErrors.email ? "email-error" : undefined}
-          aria-invalid={!!fieldErrors.email}
-        />
-        {fieldErrors.email && <div id="email-error" className="field-error" role="alert">{fieldErrors.email}</div>}
-      </div>
+      <Input
+        id="email"
+        type="email"
+        label="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        error={fieldErrors.email}
+        required
+        autoFocus
+      />
 
-      <div className="form-group">
-        <label className="form-label" htmlFor="password">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="form-input"
-          aria-describedby={fieldErrors.password ? "password-error" : undefined}
-          aria-invalid={!!fieldErrors.password}
-        />
-        {fieldErrors.password && <div id="password-error" className="field-error" role="alert">{fieldErrors.password}</div>}
-      </div>
+      <Input
+        id="password"
+        type="password"
+        label="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        error={fieldErrors.password}
+        required
+      />
 
       <div className="auth-actions">
-        <button type="submit" disabled={loading} className="btn btn-primary">
-          {loading ? 'Signing in...' : 'Sign in'}
-        </button>
+        <Button 
+          type="submit" 
+          loading={loading}
+          fullWidth
+        >
+          Sign in
+        </Button>
       </div>
-
-      {error && <div className="auth-error">{error}</div>}
 
       <div className="auth-links">
         <p>Don't have an account? <Link to="/register">Sign up</Link></p>

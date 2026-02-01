@@ -1,22 +1,35 @@
-const API_BASE = 'http://localhost:5269/api'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5269/api'
 
 async function request(path, options = {}) {
   const url = `${API_BASE}${path}`
-  const res = await fetch(url, options)
-  let data = null
+  
   try {
-    data = await res.json()
-  } catch (e) {
-    // no json
-  }
-  if (!res.ok) {
-    const msg = data?.message || res.statusText || 'Request failed'
-    const err = new Error(msg)
-    err.response = res
-    err.data = data
+    const res = await fetch(url, options)
+    let data = null
+    
+    try {
+      data = await res.json()
+    } catch (e) {
+      // Response has no JSON body
+    }
+    
+    if (!res.ok) {
+      const msg = data?.message || data?.error || res.statusText || 'Request failed'
+      const err = new Error(msg)
+      err.response = res
+      err.data = data
+      err.status = res.status
+      throw err
+    }
+    
+    return data
+  } catch (err) {
+    // Network error or request failed
+    if (!err.response) {
+      err.message = 'Network error. Please check your connection.'
+    }
     throw err
   }
-  return data
 }
 
 export async function post(path, body) {
