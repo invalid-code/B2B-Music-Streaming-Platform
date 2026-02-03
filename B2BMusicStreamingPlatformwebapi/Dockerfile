@@ -10,7 +10,7 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 # Expose the port the app runs on
-EXPOSE 5269
+EXPOSE 8080
 
 # Command to run the application
-ENTRYPOINT ["dotnet", "WebApi.dll"]
+ENTRYPOINT ["dotnet", "B2BMusicStreamingPlatformwebapi.dll"]
