@@ -20,7 +20,7 @@ services:
       context: ./B2BMusicStreamingPlatformwebapi
       dockerfile: Dockerfile
     ports:
-      - "5269:5269"
+      - "8080:8080"
     depends_on:
       - db
     environment:
