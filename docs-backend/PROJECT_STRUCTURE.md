@@ -1,12 +1,17 @@
-# Complete Project Structure
+# How Our Project is Organized
 
-## Final Directory Layout
+Hey! This document shows you how we've structured our B2B Music Streaming Platform project. Think of it as a map of all the files and folders. We'll go through each part and explain what goes where.
+
+## The Big Picture
+
+Here's the overall layout of our project:
 
 ```
 B2B-Music-Streaming-Platform/
 ?
-??? API/
-?   ??? Controllers/
+## The API Layer - Where Requests Come In
+
+This is where our web API lives. Controllers handle HTTP requests and coordinate with the business logic.
 ?   ?   ??? PlaylistsController.cs ? NEW
 ?   ?   ??? TracksController.cs ? NEW
 ?   ?   ??? VenuesController.cs (existing)

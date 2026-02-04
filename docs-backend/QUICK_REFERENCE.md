@@ -1,36 +1,38 @@
-# Quick Reference Card
+# Quick Reference Guide
 
-## ?? Running the Application
+## 🚀 Getting Started - How to Run the App
+
+Want to get the app running quickly? Here's what you need:
 
 ```bash
-# Build the project
+# Build the project first
 dotnet build
 
-# Run the project  
+# Then run it
 dotnet run
 
-# Access the API at:
+# The API will be available at:
 https://localhost:5001/api/
 ```
 
 ---
 
-## ?? API Quick Reference
+## 📡 API Quick Reference
 
-### Create Operations (POST)
+### Creating Things (POST Requests)
 
-**Create Playlist**
+**Make a New Playlist**
 ```bash
 POST /api/playlists
 {
-  "name": "My Playlist",
+  "name": "My Awesome Playlist",
   "vibeOrGenre": "Jazz",
   "trackIDs": ["track1", "track2"]
 }
-? 201 Created
+# Returns: 201 Created
 ```
 
-**Create Track**
+**Add a New Track**
 ```bash
 POST /api/tracks
 {
@@ -39,10 +41,10 @@ POST /api/tracks
   "mood": "Happy",
   "cloudflareStorageKey": "key123"
 }
-? 201 Created
+# Returns: 201 Created
 ```
 
-**Create Venue**
+**Create a Venue**
 ```bash
 POST /api/venues
 {
