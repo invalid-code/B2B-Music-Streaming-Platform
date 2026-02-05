@@ -1,60 +1,77 @@
+using API.Data;
 using API.Models.Core_Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository.Implementations
 {
-    public class PlaylistRepository : GenericRepository<Playlist>, IPlaylistRepository
+    public class PlaylistRepository : IPlaylistRepository
     {
-        public PlaylistRepository() : base()
+        private readonly MusicStreamingDbContext _dbContext;
+
+        public PlaylistRepository(MusicStreamingDbContext dbContext)
         {
+            _dbContext = dbContext;
         }
 
-        public override Task<Playlist> GetByIdAsync(string id)
+        public async Task<Playlist> GetByIdAsync(string id)
         {
-            var playlist = GetData().FirstOrDefault(p => p.PlaylistID == id);
-            return Task.FromResult(playlist);
+            return await _dbContext.Playlists.FirstOrDefaultAsync(p => p.PlaylistID == id);
         }
 
-        public override Task<bool> UpdateAsync(Playlist entity)
+        public async Task<List<Playlist>> GetAllAsync()
         {
-            var existingPlaylist = GetData().FirstOrDefault(p => p.PlaylistID == entity.PlaylistID);
+            return await _dbContext.Playlists.ToListAsync();
+        }
+
+        public async Task<Playlist> AddAsync(Playlist entity)
+        {
+            await _dbContext.Playlists.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<bool> UpdateAsync(Playlist entity)
+        {
+            var existingPlaylist = await _dbContext.Playlists.FirstOrDefaultAsync(p => p.PlaylistID == entity.PlaylistID);
             if (existingPlaylist == null)
-                return Task.FromResult(false);
+                return false;
 
             existingPlaylist.Name = entity.Name;
             existingPlaylist.VibeOrGenre = entity.VibeOrGenre;
             existingPlaylist.TrackIDs = entity.TrackIDs;
 
-            return Task.FromResult(true);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public override Task<bool> DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            var playlist = GetData().FirstOrDefault(p => p.PlaylistID == id);
+            var playlist = await _dbContext.Playlists.FirstOrDefaultAsync(p => p.PlaylistID == id);
             if (playlist == null)
-                return Task.FromResult(false);
+                return false;
 
-            GetData().Remove(playlist);
-            return Task.FromResult(true);
+            _dbContext.Playlists.Remove(playlist);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public override Task<bool> ExistsAsync(string id)
+        public async Task<bool> ExistsAsync(string id)
         {
-            return Task.FromResult(GetData().Any(p => p.PlaylistID == id));
+            return await _dbContext.Playlists.AnyAsync(p => p.PlaylistID == id);
         }
 
-        public Task<List<Playlist>> GetPlaylistsByGenreAsync(string genre)
+        public async Task<List<Playlist>> GetPlaylistsByGenreAsync(string genre)
         {
-            var playlists = GetData()
+            return await _dbContext.Playlists
                 .Where(p => p.VibeOrGenre.Equals(genre, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-            return Task.FromResult(playlists);
+                .ToListAsync();
         }
 
-        public Task<bool> AddTrackToPlaylistAsync(string playlistId, string trackId)
+        public async Task<bool> AddTrackToPlaylistAsync(string playlistId, string trackId)
         {
-            var playlist = GetData().FirstOrDefault(p => p.PlaylistID == playlistId);
+            var playlist = await _dbContext.Playlists.FirstOrDefaultAsync(p => p.PlaylistID == playlistId);
             if (playlist == null)
-                return Task.FromResult(false);
+                return false;
 
             if (playlist.TrackIDs == null)
                 playlist.TrackIDs = new List<string>();
@@ -62,19 +79,21 @@ namespace API.Repository.Implementations
             if (!playlist.TrackIDs.Contains(trackId))
                 playlist.TrackIDs.Add(trackId);
 
-            return Task.FromResult(true);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public Task<bool> RemoveTrackFromPlaylistAsync(string playlistId, string trackId)
+        public async Task<bool> RemoveTrackFromPlaylistAsync(string playlistId, string trackId)
         {
-            var playlist = GetData().FirstOrDefault(p => p.PlaylistID == playlistId);
+            var playlist = await _dbContext.Playlists.FirstOrDefaultAsync(p => p.PlaylistID == playlistId);
             if (playlist == null)
-                return Task.FromResult(false);
+                return false;
 
             if (playlist.TrackIDs != null)
                 playlist.TrackIDs.Remove(trackId);
 
-            return Task.FromResult(true);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }
