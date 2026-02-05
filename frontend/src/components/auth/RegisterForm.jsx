@@ -2,10 +2,14 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useAuthStore from '../../store/useAuthStore'
 import { validateEmail, validatePassword, validateRequired } from '../../utils/validation'
+import Input from '../common/Input'
+import Button from '../common/Button'
+import { useToast } from '../common/Toast'
 
 export default function RegisterForm() {
   const navigate = useNavigate()
   const { registerWithApi, loading, error } = useAuthStore()
+  const toast = useToast()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
@@ -27,129 +31,98 @@ export default function RegisterForm() {
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    if (!validateForm()) return
-    await registerWithApi({ 
-      email, 
-      password, 
-      fullName,
-      venueName,
-      location,
-      businessRegistrationNumber: businessRegistrationNumber || undefined
-    })
-    // navigate to app or login after register
-    navigate('/')
+    if (!validateForm()) {
+      toast.error('Please fix the form errors')
+      return
+    }
+    try {
+      await registerWithApi({ 
+        email, 
+        password, 
+        fullName,
+        venueName,
+        location,
+        businessRegistrationNumber: businessRegistrationNumber || undefined
+      })
+      toast.success('Account created successfully!')
+      navigate('/')
+    } catch (err) {
+      toast.error(err.message || 'Registration failed')
+    }
   }
 
   return (
     <form className="auth-form" onSubmit={onSubmit}>
-      <div className="form-group">
-        <label className="form-label" htmlFor="reg-email">
-          Business email
-        </label>
-        <input
-          id="reg-email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="form-input"
-          aria-describedby={fieldErrors.email ? "reg-email-error" : undefined}
-          aria-invalid={!!fieldErrors.email}
-        />
-        {fieldErrors.email && <div id="reg-email-error" className="field-error" role="alert">{fieldErrors.email}</div>}
-      </div>
+      <Input
+        id="reg-email"
+        type="email"
+        label="Business email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        error={fieldErrors.email}
+        required
+      />
 
-      <div className="form-group">
-        <label className="form-label" htmlFor="reg-fullname">
-          Full name
-        </label>
-        <input
-          id="reg-fullname"
-          type="text"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          required
-          className="form-input"
-          aria-describedby={fieldErrors.fullName ? "reg-fullname-error" : undefined}
-          aria-invalid={!!fieldErrors.fullName}
-        />
-        {fieldErrors.fullName && <div id="reg-fullname-error" className="field-error" role="alert">{fieldErrors.fullName}</div>}
-      </div>
+      <Input
+        id="reg-fullname"
+        type="text"
+        label="Full name"
+        value={fullName}
+        onChange={(e) => setFullName(e.target.value)}
+        error={fieldErrors.fullName}
+        required
+      />
 
-      <div className="form-group">
-        <label className="form-label" htmlFor="reg-venue">
-          Venue name
-        </label>
-        <input
-          id="reg-venue"
-          type="text"
-          value={venueName}
-          onChange={(e) => setVenueName(e.target.value)}
-          required
-          className="form-input"
-          aria-describedby={fieldErrors.venueName ? "reg-venue-error" : undefined}
-          aria-invalid={!!fieldErrors.venueName}
-        />
-        {fieldErrors.venueName && <div id="reg-venue-error" className="field-error" role="alert">{fieldErrors.venueName}</div>}
-      </div>
+      <Input
+        id="reg-venue"
+        type="text"
+        label="Venue name"
+        value={venueName}
+        onChange={(e) => setVenueName(e.target.value)}
+        error={fieldErrors.venueName}
+        required
+      />
 
-      <div className="form-group">
-        <label className="form-label" htmlFor="reg-location">
-          Location
-        </label>
-        <input
-          id="reg-location"
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          required
-          className="form-input"
-          aria-describedby={fieldErrors.location ? "reg-location-error" : undefined}
-          aria-invalid={!!fieldErrors.location}
-        />
-        {fieldErrors.location && <div id="reg-location-error" className="field-error" role="alert">{fieldErrors.location}</div>}
-      </div>
+      <Input
+        id="reg-location"
+        type="text"
+        label="Location"
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
+        error={fieldErrors.location}
+        required
+      />
 
-      <div className="form-group">
-        <label className="form-label" htmlFor="reg-password">
-          Password
-        </label>
-        <input
-          id="reg-password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="form-input"
-          aria-describedby={fieldErrors.password ? "reg-password-error" : undefined}
-          aria-invalid={!!fieldErrors.password}
-        />
-        {fieldErrors.password && <div id="reg-password-error" className="field-error" role="alert">{fieldErrors.password}</div>}
-      </div>
+      <Input
+        id="reg-password"
+        type="password"
+        label="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        error={fieldErrors.password}
+        required
+      />
 
-      <div className="form-group">
-        <label className="form-label" htmlFor="reg-business-reg">
-          Business registration number (optional)
-        </label>
-        <input
-          id="reg-business-reg"
-          type="text"
-          value={businessRegistrationNumber}
-          onChange={(e) => setBusinessRegistrationNumber(e.target.value)}
-          className="form-input"
-        />
-      </div>
+      <Input
+        id="reg-business-reg"
+        type="text"
+        label="Business registration number (optional)"
+        value={businessRegistrationNumber}
+        onChange={(e) => setBusinessRegistrationNumber(e.target.value)}
+      />
 
       <div className="auth-actions">
-        <button type="submit" disabled={loading} className="btn btn-primary">
-          {loading ? 'Creating account...' : 'Create account'}
-        </button>
+        <Button 
+          type="submit" 
+          loading={loading}
+          fullWidth
+        >
+          Create account
+        </Button>
       </div>
 
-      {error && <div className="auth-error">{error}</div>}
-
       <div className="auth-links">
-        <p>Already have an account? <Link to="/login">Sign in</Link></p>
+        <p>Already have an account? <Link to="/">Sign in</Link></p>
       </div>
     </form>
   )
