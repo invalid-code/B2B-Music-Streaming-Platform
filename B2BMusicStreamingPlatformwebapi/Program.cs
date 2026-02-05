@@ -12,7 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+
+// Swagger/OpenAPI
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -45,11 +48,11 @@ builder.Services.AddDbContext<MusicStreamingDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 // Register Repositories
+// Register Repositories
 builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
 builder.Services.AddScoped<ITrackRepository, TrackRepository>();
 builder.Services.AddScoped<IVenueRepository, VenueRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 // Register Services
 builder.Services.AddScoped<IVenueService, VenueService>();
@@ -60,6 +63,8 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 // TODO: Implement StreamingService and CloudflareSignedUrlService
 // builder.Services.AddScoped<IStreamingService, StreamingService>();
 // builder.Services.AddScoped<ISignedUrlService, CloudflareSignedUrlService>();
+
+// Configure CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
@@ -74,7 +79,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "B2B Music Streaming API v1");
+        // Remove RoutePrefix override
+    });
 }
 
 app.UseHttpsRedirection();
