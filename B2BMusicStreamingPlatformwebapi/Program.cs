@@ -49,11 +49,11 @@ builder.Services.AddDbContext<MusicStreamingDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 // Register Repositories
+// Register Repositories
 builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
 builder.Services.AddScoped<ITrackRepository, TrackRepository>();
 builder.Services.AddScoped<IVenueRepository, VenueRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 // Register Services
 builder.Services.AddScoped<IVenueService, VenueService>();
