@@ -44,7 +44,6 @@ builder.Services.AddAuthentication(options =>
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQLDbConnStr")
     ?? builder.Configuration["ConnectionStrings:PostgreSQLDbConnStr"]
     ?? throw new InvalidOperationException("PostgreSQL connection string not configured.");
-
 builder.Services.AddDbContext<MusicStreamingDbContext>(options =>
     options.UseNpgsql(connectionString));
 
