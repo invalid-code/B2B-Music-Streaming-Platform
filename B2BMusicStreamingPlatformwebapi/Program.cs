@@ -18,9 +18,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configure JWT Authentication
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var secretKey = jwtSettings["SecretKey"];
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -34,16 +31,14 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        ValidIssuer = builder.Configuration["JwtIssuer"],
+        ValidAudience = builder.Configuration["JwtAudience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSecretKey"]))
     };
 });
 
 // Configure Database Context
-var connectionString = builder.Configuration.GetConnectionString("PostgreSQLDbConnStr")
-    ?? builder.Configuration["ConnectionStrings:PostgreSQLDbConnStr"]
-    ?? throw new InvalidOperationException("PostgreSQL connection string not configured.");
+var connectionString = builder.Configuration["PostgreSQLDbConnStr"];
 builder.Services.AddDbContext<MusicStreamingDbContext>(options =>
     options.UseNpgsql(connectionString));
 
