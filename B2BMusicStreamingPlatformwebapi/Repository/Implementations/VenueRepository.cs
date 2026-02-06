@@ -1,61 +1,77 @@
+using API.Data;
 using API.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository.Implementations
 {
-    public class VenueRepository : GenericRepository<Venue>, IVenueRepository
+    public class VenueRepository : IVenueRepository
     {
-        public VenueRepository() : base()
+        private readonly MusicStreamingDbContext _dbContext;
+
+        public VenueRepository(MusicStreamingDbContext dbContext)
         {
+            _dbContext = dbContext;
         }
 
-        public override Task<Venue> GetByIdAsync(string id)
+        public async Task<Venue> GetByIdAsync(string id)
         {
-            var venue = GetData().FirstOrDefault(v => v.VenueID == id);
-            return Task.FromResult(venue);
+            return await _dbContext.Venues.FirstOrDefaultAsync(v => v.VenueID == id);
         }
 
-        public override Task<bool> UpdateAsync(Venue entity)
+        public async Task<List<Venue>> GetAllAsync()
         {
-            var existingVenue = GetData().FirstOrDefault(v => v.VenueID == entity.VenueID);
+            return await _dbContext.Venues.ToListAsync();
+        }
+
+        public async Task<Venue> AddAsync(Venue entity)
+        {
+            await _dbContext.Venues.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<bool> UpdateAsync(Venue entity)
+        {
+            var existingVenue = await _dbContext.Venues.FirstOrDefaultAsync(v => v.VenueID == entity.VenueID);
             if (existingVenue == null)
-                return Task.FromResult(false);
+                return false;
 
             existingVenue.BusinessName = entity.BusinessName;
             existingVenue.Location = entity.Location;
             existingVenue.SubscriptionStatus = entity.SubscriptionStatus;
 
-            return Task.FromResult(true);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public override Task<bool> DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            var venue = GetData().FirstOrDefault(v => v.VenueID == id);
+            var venue = await _dbContext.Venues.FirstOrDefaultAsync(v => v.VenueID == id);
             if (venue == null)
-                return Task.FromResult(false);
+                return false;
 
-            GetData().Remove(venue);
-            return Task.FromResult(true);
+            _dbContext.Venues.Remove(venue);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public override Task<bool> ExistsAsync(string id)
+        public async Task<bool> ExistsAsync(string id)
         {
-            return Task.FromResult(GetData().Any(v => v.VenueID == id));
+            return await _dbContext.Venues.AnyAsync(v => v.VenueID == id);
         }
 
-        public Task<List<Venue>> GetVenuesBySubscriptionStatusAsync(string status)
+        public async Task<List<Venue>> GetVenuesBySubscriptionStatusAsync(string status)
         {
-            var venues = GetData()
+            return await _dbContext.Venues
                 .Where(v => v.SubscriptionStatus.Equals(status, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-            return Task.FromResult(venues);
+                .ToListAsync();
         }
 
-        public Task<List<Venue>> GetVenuesByLocationAsync(string location)
+        public async Task<List<Venue>> GetVenuesByLocationAsync(string location)
         {
-            var venues = GetData()
+            return await _dbContext.Venues
                 .Where(v => v.Location.Equals(location, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-            return Task.FromResult(venues);
+                .ToListAsync();
         }
     }
 }
