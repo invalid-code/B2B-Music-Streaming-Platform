@@ -1,27 +1,43 @@
+using API.Data;
 using API.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository.Implementations
 {
     /// <summary>
     /// Repository implementation for Tenant (Venue) operations.
     /// </summary>
-    public class TenantRepository : GenericRepository<Tenant>, ITenantRepository
+    public class TenantRepository : ITenantRepository
     {
-        public TenantRepository() : base()
+        private readonly MusicStreamingDbContext _dbContext;
+
+        public TenantRepository(MusicStreamingDbContext dbContext)
         {
+            _dbContext = dbContext;
         }
 
-        public override Task<Tenant> GetByIdAsync(string id)
+        public async Task<Tenant> GetByIdAsync(string id)
         {
-            var tenant = GetData().FirstOrDefault(t => t.Id == id);
-            return Task.FromResult(tenant);
+            return await _dbContext.Tenants.FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public override Task<bool> UpdateAsync(Tenant entity)
+        public async Task<List<Tenant>> GetAllAsync()
         {
-            var existingTenant = GetData().FirstOrDefault(t => t.Id == entity.Id);
+            return await _dbContext.Tenants.ToListAsync();
+        }
+
+        public async Task<Tenant> AddAsync(Tenant entity)
+        {
+            await _dbContext.Tenants.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<bool> UpdateAsync(Tenant entity)
+        {
+            var existingTenant = await _dbContext.Tenants.FirstOrDefaultAsync(t => t.Id == entity.Id);
             if (existingTenant == null)
-                return Task.FromResult(false);
+                return false;
 
             existingTenant.Name = entity.Name;
             existingTenant.Location = entity.Location;
@@ -29,52 +45,53 @@ namespace API.Repository.Implementations
             existingTenant.StripeCustomerId = entity.StripeCustomerId;
             existingTenant.UpdatedAt = DateTime.UtcNow;
 
-            return Task.FromResult(true);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public override Task<bool> DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            var tenant = GetData().FirstOrDefault(t => t.Id == id);
+            var tenant = await _dbContext.Tenants.FirstOrDefaultAsync(t => t.Id == id);
             if (tenant == null)
-                return Task.FromResult(false);
+                return false;
 
-            GetData().Remove(tenant);
-            return Task.FromResult(true);
+            _dbContext.Tenants.Remove(tenant);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public override Task<bool> ExistsAsync(string id)
+        public async Task<bool> ExistsAsync(string id)
         {
-            return Task.FromResult(GetData().Any(t => t.Id == id));
+            return await _dbContext.Tenants.AnyAsync(t => t.Id == id);
         }
 
-        public Task<Tenant> GetByNameAsync(string name)
+        public async Task<Tenant> GetByNameAsync(string name)
         {
-            var tenant = GetData().FirstOrDefault(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-            return Task.FromResult(tenant);
+            return await _dbContext.Tenants
+                .FirstOrDefaultAsync(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        public Task<List<Tenant>> GetActiveTenantAsync()
+        public async Task<List<Tenant>> GetActiveTenantAsync()
         {
-            var tenants = GetData().Where(t => t.IsActive).ToList();
-            return Task.FromResult(tenants);
+            return await _dbContext.Tenants
+                .Where(t => t.IsActive)
+                .ToListAsync();
         }
 
-        public Task<List<Tenant>> GetByPlanTypeAsync(string planType)
+        public async Task<List<Tenant>> GetByPlanTypeAsync(string planType)
         {
-            var tenants = GetData()
+            return await _dbContext.Tenants
                 .Where(t => t.PlanType.Equals(planType, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-            return Task.FromResult(tenants);
+                .ToListAsync();
         }
 
-        public Task<List<Tenant>> GetExpiredTrialsAsync()
+        public async Task<List<Tenant>> GetExpiredTrialsAsync()
         {
             var now = DateTime.UtcNow;
-            var tenants = GetData()
+            return await _dbContext.Tenants
                 .Where(t => t.PlanType == "Trial" && t.TrialStartDate.HasValue &&
                        (now - t.TrialStartDate.Value).TotalSeconds > 1800) // 30 minutes
-                .ToList();
-            return Task.FromResult(tenants);
+                .ToListAsync();
         }
     }
 }
