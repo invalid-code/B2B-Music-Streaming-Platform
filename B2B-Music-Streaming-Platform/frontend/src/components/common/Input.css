@@ -1,0 +1,179 @@
+/* Modern Input Component Styles */
+
+.input-wrapper {
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.input-container {
+  position: relative;
+  width: 100%;
+}
+
+.modern-input {
+  width: 100%;
+  padding: 1rem 1rem 0.5rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--card-bg);
+  color: var(--text-color);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+/* Password input with toggle button needs extra padding */
+.input-container:has(.password-toggle) .modern-input {
+  padding-right: 3rem;
+}
+
+.modern-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(29, 185, 84, 0.1);
+  transform: translateY(-2px);
+}
+
+.modern-input:hover:not(:focus):not(:disabled) {
+  border-color: var(--accent-color);
+}
+
+.modern-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Floating Label */
+.floating-label {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent-color);
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--card-bg);
+  padding: 0 0.25rem;
+}
+
+.input-container.is-active .floating-label,
+.modern-input:focus + .floating-label {
+  top: 0;
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.modern-input:not(:placeholder-shown) + .floating-label {
+  top: 0;
+  font-size: 0.75rem;
+  color: var(--accent-color);
+}
+
+.required-star {
+  color: #ff6b6b;
+  margin-left: 0.125rem;
+}
+
+/* Password Toggle Button */
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: var(--primary-color);
+  background: rgba(29, 185, 84, 0.1);
+}
+
+.password-toggle:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* Error States */
+.input-wrapper.has-error .modern-input {
+  border-color: #ff6b6b;
+  animation: shake 0.4s ease;
+}
+
+.input-wrapper.has-error .modern-input:focus {
+  box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+}
+
+.input-wrapper.has-error .floating-label {
+  color: #ff6b6b;
+}
+
+.input-error {
+  color: #ff6b6b;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  animation: slideDown 0.3s ease;
+}
+
+.input-error::before {
+  content: '⚠';
+  font-size: 1rem;
+}
+
+/* Animations */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Disabled State */
+.input-wrapper.is-disabled .floating-label {
+  opacity: 0.5;
+}
+
+/* Focus-visible for accessibility */
+.modern-input:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Autofill styling */
+.modern-input:-webkit-autofill,
+.modern-input:-webkit-autofill:hover,
+.modern-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-color);
+  -webkit-box-shadow: 0 0 0px 1000px var(--card-bg) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .modern-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}

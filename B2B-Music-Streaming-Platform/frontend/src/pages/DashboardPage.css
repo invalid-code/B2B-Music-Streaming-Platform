@@ -1,0 +1,251 @@
+/* ============================================
+   Dashboard Page Styles
+   ============================================ */
+
+.dashboard-page__header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-page__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+}
+
+.dashboard-page__subtitle {
+  color: var(--accent-color);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* ---- Stats Grid ---- */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-family: inherit;
+  color: var(--text-color);
+}
+
+.stat-card:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-card__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-card__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stat-card__label {
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+/* ---- Sections ---- */
+
+.dashboard-section {
+  margin-bottom: 2rem;
+}
+
+.dashboard-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.dashboard-section__header h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.dashboard-section__link {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-family: inherit;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.dashboard-section__link:hover {
+  background: rgba(29, 185, 84, 0.1);
+}
+
+.dashboard-section__empty {
+  color: var(--accent-color);
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}
+
+.dashboard-section__skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* ---- Recent Tracks ---- */
+
+.recent-tracks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.recent-track-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+
+.recent-track-item:hover {
+  border-color: var(--primary-color);
+}
+
+.recent-track-item__icon {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.recent-track-item__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.recent-track-item__title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent-track-item__artist {
+  font-size: 0.8rem;
+  color: var(--accent-color);
+}
+
+.recent-track-item__mood {
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  background: rgba(29, 185, 84, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ---- Recent Playlists ---- */
+
+.recent-playlists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.recent-playlist-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.recent-playlist-card:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.recent-playlist-card__icon {
+  color: #4a9eff;
+  background: rgba(74, 158, 255, 0.12);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recent-playlist-card__name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.recent-playlist-card__genre {
+  font-size: 0.75rem;
+  color: var(--accent-color);
+}
+
+.recent-playlist-card__count {
+  font-size: 0.75rem;
+  color: var(--primary-color);
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .recent-playlists-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
