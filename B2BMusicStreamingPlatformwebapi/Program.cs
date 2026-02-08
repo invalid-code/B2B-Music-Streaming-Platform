@@ -55,9 +55,9 @@ builder.Services.AddScoped<ITrackService, TrackService>();
 builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-// TODO: Implement StreamingService and CloudflareSignedUrlService
-// builder.Services.AddScoped<IStreamingService, StreamingService>();
-// builder.Services.AddScoped<ISignedUrlService, CloudflareSignedUrlService>();
+// Register Cloudflare R2 Service
+builder.Services.AddScoped<ICloudflareR2Service, CloudflareR2Service>();
+builder.Services.AddHttpClient<CloudflareR2Service>();
 
 // Configure CORS
 builder.Services.AddCors(options =>
