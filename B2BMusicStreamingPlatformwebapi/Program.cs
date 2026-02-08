@@ -63,13 +63,15 @@ builder.Services.AddHttpClient<CloudflareR2Service>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
+        policy => policy.WithOrigins(builder.Configuration["FrontendOrigin"])
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials());
 });
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -80,6 +82,24 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "B2B Music Streaming API v1");
         // Remove RoutePrefix override
     });
+}
+else
+{
+    // auto apply migrations when building for prod env
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {
+            var context = services.GetRequiredService<MusicStreamingDbContext>(); // Replace with your actual DbContext name
+            context.Database.Migrate();
+            Console.WriteLine("Database migrations applied successfully.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while migrating the database: {ex.Message}");
+        }
+    }
 }
 
 app.UseHttpsRedirection();

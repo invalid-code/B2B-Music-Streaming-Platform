@@ -1,16 +1,16 @@
-# Use the official .NET SDK image to build the app
+# Stage 1: Build and publish
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
+COPY . ./
+RUN dotnet restore
 COPY . .
-RUN dotnet publish "B2BMusicStreamingPlatformwebapi.csproj" -c Release -o /app/publish
+RUN dotnet publish -c Release -o /app/publish
 
-# Use the ASP.NET runtime image for the final image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+# Stage 2: Final runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 COPY --from=build /app/publish .
-
-# Expose the port the app runs on
+# Production security: run as a non-root user
+USER $APP_UID
 EXPOSE 8080
-
-# Command to run the application
 ENTRYPOINT ["dotnet", "B2BMusicStreamingPlatformwebapi.dll"]

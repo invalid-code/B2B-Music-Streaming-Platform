@@ -484,6 +484,4 @@ $RECYCLE.BIN/
 *.swp
 
 dist
-.env.local
-.env.production.local
-.env.development.local
+nginx.conf
