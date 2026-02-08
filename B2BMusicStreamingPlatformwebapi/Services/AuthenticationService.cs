@@ -3,6 +3,9 @@ using API.Models.DTOs.Response.Auth;
 using API.Models.Entities;
 using API.Models.Identity;
 using API.Data;
+using Konscious.Security.Cryptography;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace API.Services
 {
@@ -203,17 +206,22 @@ namespace API.Services
 
         private string HashPassword(string password)
         {
-            return Convert.ToBase64String(
-                System.Security.Cryptography.SHA256.HashData(
-                    System.Text.Encoding.UTF8.GetBytes(password)
-                )
-            );
+            using var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password));
+
+            var buf = new byte[16];
+            using var rng = RandomNumberGenerator.Create(); // need better salt rng
+            rng.GetBytes(buf);
+            argon2.Salt = buf;
+            argon2.DegreeOfParallelism = 8; // no of threads
+            argon2.Iterations = 4;
+            argon2.MemorySize = 1024 * 128; // 128mb
+            return argon2.ToString();
         }
 
         private bool VerifyPassword(string password, string hash)
         {
             var hashOfInput = HashPassword(password);
-            return hashOfInput == hash;
+            return CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(hashOfInput), Encoding.UTF8.GetBytes(hash));
         }
     }
 }
