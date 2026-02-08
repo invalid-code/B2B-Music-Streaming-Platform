@@ -1,0 +1,145 @@
+flowchart TB
+    %% Styling
+    classDef frontend fill:#61dafb,stroke:#333,stroke-width:2px,color:#000
+    classDef backend fill:#512bd4,stroke:#333,stroke-width:2px,color:#fff
+    classDef service fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    classDef repository fill:#4ecdc4,stroke:#333,stroke-width:2px,color:#000
+    classDef database fill:#95e1d3,stroke:#333,stroke-width:2px,color:#000
+    classDef middleware fill:#ffd93d,stroke:#333,stroke-width:2px,color:#000
+
+    %% User Layer
+    User([User/Client Browser])
+    
+    %% Frontend Layer
+    subgraph Frontend["Frontend Layer (React + Vite - Port 5173)"]
+        AppJSX[App.jsx]
+        LoginPage[LoginPage Component]
+        RegisterPage[RegisterPage Component]
+        AuthStore[AuthStore - Zustand + localStorage]
+        APIClient[API Client with JWT Bearer]
+        ToastNotif[Toast Notifications]
+        ErrorBound[Error Boundary]
+    end
+
+    %% API/Controller Layer
+    subgraph APILayer["API Layer (ASP.NET Core - Port 5269)"]
+        AuthCtrl[AuthController<br/>/api/auth/login<br/>/api/auth/register]
+        VenueCtrl[VenuesController<br/>/api/venues/*]
+        PlaylistCtrl[PlaylistsController<br/>/api/playlists/*]
+        TrackCtrl[TracksController<br/>/api/tracks/*]
+    end
+
+    %% Middleware
+    subgraph Middleware["Middleware Layer"]
+        CORS[CORS Policy<br/>AllowFrontend]
+        JWTAuth[JWT Authentication<br/>Middleware]
+        AuthZ[Authorization<br/>Middleware]
+    end
+
+    %% Service Layer
+    subgraph ServiceLayer["Service Layer"]
+        AuthSvc[AuthenticationService<br/>IAuthenticationService]
+        JWTSvc[JwtTokenService<br/>IJwtTokenService]
+        VenueSvc[VenueService<br/>IVenueService]
+        PlaylistSvc[PlaylistService<br/>IPlaylistService]
+        TrackSvc[TrackService<br/>ITrackService]
+    end
+
+    %% Repository Layer
+    subgraph RepoLayer["Repository Layer"]
+        GenericRepo[GenericRepository&lt;T&gt;<br/>Base Implementation]
+        VenueRepo[VenueRepository<br/>IVenueRepository]
+        PlaylistRepo[PlaylistRepository<br/>IPlaylistRepository]
+        TrackRepo[TrackRepository<br/>ITrackRepository]
+        TenantRepo[TenantRepository<br/>ITenantRepository]
+    end
+
+    %% Data Layer
+    subgraph DataLayer["Data Layer"]
+        EFCore[Entity Framework Core<br/>MusicStreamingDbContext]
+        DB[(PostgreSQL Database<br/>Entities:<br/>Venue, Playlist, Track<br/>Tenant, PlaybackSession)]
+    end
+
+    %% Main Flow Connections
+    User -->|Login/Register| AppJSX
+    AppJSX --> LoginPage
+    AppJSX --> RegisterPage
+    LoginPage --> AuthStore
+    RegisterPage --> AuthStore
+    AuthStore -->|Store JWT Token| APIClient
+    
+    APIClient -->|HTTP Requests| CORS
+    CORS --> JWTAuth
+    JWTAuth -->|Valid Token?| AuthZ
+    AuthZ -->|Authorized| AuthCtrl
+    AuthZ -->|Authorized| VenueCtrl
+    AuthZ -->|Authorized| PlaylistCtrl
+    AuthZ -->|Authorized| TrackCtrl
+
+    %% Auth Flow
+    AuthCtrl --> AuthSvc
+    AuthSvc --> JWTSvc
+    JWTSvc -->|Generate Token| AuthCtrl
+    AuthCtrl -->|Return JWT| APIClient
+    APIClient -->|Persist Token| AuthStore
+
+    %% Venue Flow
+    VenueCtrl --> VenueSvc
+    VenueSvc --> VenueRepo
+    VenueRepo --> GenericRepo
+    
+    %% Playlist Flow
+    PlaylistCtrl --> PlaylistSvc
+    PlaylistSvc --> PlaylistRepo
+    PlaylistRepo --> GenericRepo
+    
+    %% Track Flow
+    TrackCtrl --> TrackSvc
+    TrackSvc --> TrackRepo
+    TrackRepo --> GenericRepo
+
+    %% Multi-Tenant Flow
+    VenueSvc --> TenantRepo
+    PlaylistSvc --> TenantRepo
+    TrackSvc --> TenantRepo
+    TenantRepo --> GenericRepo
+
+    %% Database Access
+    GenericRepo --> EFCore
+    EFCore --> DB
+    DB -->|Query Results| EFCore
+    EFCore -->|Entities| GenericRepo
+
+    %% Response Flow
+    GenericRepo -->|Data| VenueSvc
+    GenericRepo -->|Data| PlaylistSvc
+    GenericRepo -->|Data| TrackSvc
+    
+    VenueSvc -->|DTO| VenueCtrl
+    PlaylistSvc -->|DTO| PlaylistCtrl
+    TrackSvc -->|DTO| TrackCtrl
+    
+    VenueCtrl -->|JSON Response| APIClient
+    PlaylistCtrl -->|JSON Response| APIClient
+    TrackCtrl -->|JSON Response| APIClient
+    
+    APIClient -->|Update UI| AppJSX
+    AppJSX -->|Display| User
+
+    %% Error Handling
+    APIClient -.->|On Error| ToastNotif
+    APIClient -.->|Critical Error| ErrorBound
+    ErrorBound -.->|Display Error| User
+    ToastNotif -.->|Notify| User
+
+    %% Token Validation Failure
+    JWTAuth -.->|Invalid Token| APIClient
+    APIClient -.->|Redirect to Login| LoginPage
+
+    %% Apply Styles
+    class AppJSX,LoginPage,RegisterPage,AuthStore,APIClient,ToastNotif,ErrorBound frontend
+    class AuthCtrl,VenueCtrl,PlaylistCtrl,TrackCtrl backend
+    class AuthSvc,JWTSvc,VenueSvc,PlaylistSvc,TrackSvc service
+    class GenericRepo,VenueRepo,PlaylistRepo,TrackRepo,TenantRepo repository
+    class EFCore,DB database
+    class CORS,JWTAuth,AuthZ middleware

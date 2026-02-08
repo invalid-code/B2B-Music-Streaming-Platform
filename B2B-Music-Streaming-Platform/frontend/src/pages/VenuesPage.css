@@ -1,0 +1,164 @@
+/* ============================================
+   Venues Page Styles
+   ============================================ */
+
+.venues-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* ---- Venue List ---- */
+
+.venue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.venue-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.venue-card:hover {
+  border-color: var(--primary-color);
+  background: rgba(29, 185, 84, 0.04);
+}
+
+.venue-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255, 165, 0, 0.12);
+  color: #ffa500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.venue-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.venue-card__name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.venue-card__location {
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.venue-card__badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.venue-card__badge--paid {
+  background: rgba(29, 185, 84, 0.12);
+  color: var(--primary-color);
+}
+
+.venue-card__badge--trial {
+  background: rgba(255, 165, 0, 0.12);
+  color: #ffa500;
+}
+
+.venue-card__actions {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.venue-card__action-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--accent-color);
+  cursor: pointer;
+  padding: 0.375rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.venue-card__action-btn:hover {
+  color: var(--text-color);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-color);
+}
+
+.venue-card__action-btn--danger:hover {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+/* ---- Venue Form ---- */
+
+.venue-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.venue-form__select-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+.venue-form__select-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+}
+
+.venue-form__select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-color);
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.venue-form__select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.venue-form__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 640px) {
+  .venue-card__badge {
+    display: none;
+  }
+}

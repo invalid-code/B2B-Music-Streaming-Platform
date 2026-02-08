@@ -1,0 +1,206 @@
+/* ============================================
+   Tracks Page Styles
+   ============================================ */
+
+/* Shared page header — reused by all CRUD pages */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.page-header__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-header__subtitle {
+  color: var(--accent-color);
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+}
+
+/* ---- Filters ---- */
+
+.tracks-filters {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.tracks-filters__search {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.tracks-filters__search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent-color);
+  pointer-events: none;
+}
+
+.tracks-filters__input {
+  width: 100%;
+  padding: 0.625rem 0.75rem 0.625rem 2.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.tracks-filters__input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.tracks-filters__select {
+  padding: 0.625rem 0.75rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-color);
+  font-size: 0.875rem;
+  font-family: inherit;
+  cursor: pointer;
+  min-width: 140px;
+}
+
+.tracks-filters__select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* ---- Skeleton grid ---- */
+
+.tracks-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* ---- Track List ---- */
+
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.track-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.track-card:hover {
+  border-color: var(--primary-color);
+  background: rgba(29, 185, 84, 0.04);
+}
+
+.track-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(29, 185, 84, 0.12);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.track-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.track-card__title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-card__artist {
+  font-size: 0.8rem;
+  color: var(--accent-color);
+}
+
+.track-card__mood {
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  background: rgba(29, 185, 84, 0.1);
+  padding: 0.25rem 0.625rem;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.track-card__actions {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.track-card__action-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--accent-color);
+  cursor: pointer;
+  padding: 0.375rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.track-card__action-btn:hover {
+  color: var(--text-color);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-color);
+}
+
+.track-card__action-btn--danger:hover {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+/* ---- Track Form ---- */
+
+.track-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.track-form__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .track-card__mood {
+    display: none;
+  }
+}
