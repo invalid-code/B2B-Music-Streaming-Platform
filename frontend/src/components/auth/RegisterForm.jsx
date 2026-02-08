@@ -8,7 +8,7 @@ import { useToast } from '../common/Toast'
 
 export default function RegisterForm() {
   const navigate = useNavigate()
-  const { registerWithApi, loading, error } = useAuthStore()
+  const { registerWithApi, loading } = useAuthStore()
   const toast = useToast()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -45,7 +45,7 @@ export default function RegisterForm() {
         businessRegistrationNumber: businessRegistrationNumber || undefined
       })
       toast.success('Account created successfully!')
-      navigate('/')
+      navigate('/dashboard')
     } catch (err) {
       toast.error(err.message || 'Registration failed')
     }
@@ -122,7 +122,7 @@ export default function RegisterForm() {
       </div>
 
       <div className="auth-links">
-        <p>Already have an account? <Link to="/">Sign in</Link></p>
+        <p>Already have an account? <Link to="/login">Sign in</Link></p>
       </div>
     </form>
   )

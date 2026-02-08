@@ -8,7 +8,7 @@ import { useToast } from '../common/Toast'
 
 export default function LoginForm() {
   const navigate = useNavigate()
-  const { loginWithApi, loading, error } = useAuthStore()
+  const { loginWithApi, loading } = useAuthStore()
   const toast = useToast()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -31,7 +31,7 @@ export default function LoginForm() {
     try {
       await loginWithApi({ email, password })
       toast.success('Welcome back!')
-      navigate('/')
+      navigate('/dashboard')
     } catch (err) {
       toast.error(err.message || 'Login failed')
     }
@@ -71,7 +71,7 @@ export default function LoginForm() {
       </div>
 
       <div className="auth-links">
-        <p>Don't have an account? <Link to="/register">Sign up</Link></p>
+        <p>Don&apos;t have an account? <Link to="/register">Sign up</Link></p>
       </div>
     </form>
   )

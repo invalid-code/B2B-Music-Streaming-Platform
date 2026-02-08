@@ -185,10 +185,10 @@
     rgba(255, 255, 255, 0.1) 50%,
     transparent 70%
   );
-  animation: shimmer 2s infinite;
+  animation: buttonShimmer 2s infinite;
 }
 
-@keyframes shimmer {
+@keyframes buttonShimmer {
   0% {
     transform: translateX(-100%);
   }

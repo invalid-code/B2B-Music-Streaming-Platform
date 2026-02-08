@@ -37,6 +37,12 @@ async function request(path, options = {}) {
     }
     
     if (!res.ok) {
+      // Auto-logout on 401 Unauthorized
+      if (res.status === 401) {
+        localStorage.removeItem('auth-storage')
+        window.location.href = '/login'
+      }
+
       const msg = data?.message || data?.error || res.statusText || 'Request failed'
       const err = new Error(msg)
       err.response = res
