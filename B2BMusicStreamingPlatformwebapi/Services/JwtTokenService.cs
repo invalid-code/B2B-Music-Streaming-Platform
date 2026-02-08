@@ -7,8 +7,7 @@ namespace API.Services
     /// <summary>
     /// Service for generating JWT tokens for authentication.
     /// The JWT payload includes the TenantId for multi-tenant isolation.
-    /// NOTE: This is a simplified implementation using manual JWT construction.
-    /// When database is added, upgrade to Microsoft.IdentityModel.Tokens for production-grade security.
+    /// Uses Entity Framework Core with PostgreSQL for user and tenant data.
     /// </summary>
     public class JwtTokenService : IJwtTokenService
     {

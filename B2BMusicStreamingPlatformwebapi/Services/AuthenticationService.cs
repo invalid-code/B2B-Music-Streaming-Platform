@@ -9,16 +9,12 @@ namespace API.Services
     /// <summary>
     /// Service for handling user registration and authentication.
     /// Implements the multi-tenant pattern where each registration creates a Tenant.
-    /// NOTE: This is a simplified in-memory implementation.
-    /// When database is added, integrate with ASP.NET Core Identity and EF Core.
+    /// Uses Entity Framework Core with PostgreSQL for data persistence.
     /// </summary>
     public class AuthenticationService : IAuthenticationService
     {
         private readonly IJwtTokenService _jwtTokenService;
-        // In-memory storage for users (replace with database later)
-        // private static readonly List<ApplicationUser> _users = new();
-        // private static readonly List<Tenant> _tenants = new();
-        private MusicStreamingDbContext _dbContext;
+        private readonly MusicStreamingDbContext _dbContext;
 
         public AuthenticationService(IJwtTokenService jwtTokenService, MusicStreamingDbContext dbContext)
         {
