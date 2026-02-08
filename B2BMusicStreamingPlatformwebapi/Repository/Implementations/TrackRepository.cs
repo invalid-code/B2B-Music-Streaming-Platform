@@ -1,62 +1,78 @@
+using API.Data;
 using API.Models.Core_Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository.Implementations
 {
-    public class TrackRepository : GenericRepository<Track>, ITrackRepository
+    public class TrackRepository : ITrackRepository
     {
-        public TrackRepository() : base()
+        private readonly MusicStreamingDbContext _dbContext;
+
+        public TrackRepository(MusicStreamingDbContext dbContext)
         {
+            _dbContext = dbContext;
         }
 
-        public override Task<Track> GetByIdAsync(string id)
+        public async Task<Track> GetByIdAsync(string id)
         {
-            var track = GetData().FirstOrDefault(t => t.TrackID == id);
-            return Task.FromResult(track);
+            return await _dbContext.Tracks.FirstOrDefaultAsync(t => t.TrackID == id);
         }
 
-        public override Task<bool> UpdateAsync(Track entity)
+        public async Task<List<Track>> GetAllAsync()
         {
-            var existingTrack = GetData().FirstOrDefault(t => t.TrackID == entity.TrackID);
+            return await _dbContext.Tracks.ToListAsync();
+        }
+
+        public async Task<Track> AddAsync(Track entity)
+        {
+            await _dbContext.Tracks.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<bool> UpdateAsync(Track entity)
+        {
+            var existingTrack = await _dbContext.Tracks.FirstOrDefaultAsync(t => t.TrackID == entity.TrackID);
             if (existingTrack == null)
-                return Task.FromResult(false);
+                return false;
 
             existingTrack.Title = entity.Title;
             existingTrack.Artist = entity.Artist;
             existingTrack.Mood = entity.Mood;
             existingTrack.CloudflareStorageKey = entity.CloudflareStorageKey;
 
-            return Task.FromResult(true);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public override Task<bool> DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            var track = GetData().FirstOrDefault(t => t.TrackID == id);
+            var track = await _dbContext.Tracks.FirstOrDefaultAsync(t => t.TrackID == id);
             if (track == null)
-                return Task.FromResult(false);
+                return false;
 
-            GetData().Remove(track);
-            return Task.FromResult(true);
+            _dbContext.Tracks.Remove(track);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public override Task<bool> ExistsAsync(string id)
+        public async Task<bool> ExistsAsync(string id)
         {
-            return Task.FromResult(GetData().Any(t => t.TrackID == id));
+            return await _dbContext.Tracks.AnyAsync(t => t.TrackID == id);
         }
 
-        public Task<List<Track>> GetTracksByMoodAsync(string mood)
+        public async Task<List<Track>> GetTracksByMoodAsync(string mood)
         {
-            var tracks = GetData()
+            return await _dbContext.Tracks
                 .Where(t => t.Mood.Equals(mood, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-            return Task.FromResult(tracks);
+                .ToListAsync();
         }
 
-        public Task<List<Track>> GetTracksByArtistAsync(string artist)
+        public async Task<List<Track>> GetTracksByArtistAsync(string artist)
         {
-            var tracks = GetData()
+            return await _dbContext.Tracks
                 .Where(t => t.Artist.Equals(artist, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-            return Task.FromResult(tracks);
+                .ToListAsync();
         }
     }
 }
