@@ -86,7 +86,7 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
+        policy => policy.WithOrigins("http://localhost:5173", "http://localhost:3000", "https://shrill-glade-8de2.invalid-jess15.workers.dev")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials());
